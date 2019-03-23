@@ -4,6 +4,30 @@ import speech_recognition as sr
 
 import os
 
+from tkinter import *
+import win32api
+import win32con
+import pywintypes
+
+# GUI Window using Tkinter
+window = Tk()
+title = Label(text='VoiceToCode', font=('Times New Roman bold', '20'), fg='black', bg='white')
+window.overrideredirect(1)
+window.lift()
+window.attributes("-topmost", True)
+window.attributes("-disabled", True)
+window.attributes("-alpha", 0.7)
+window.geometry("-1+100")
+hWindow = pywintypes.HANDLE(int(window.frame(), 16))
+ex_style = win32con.WS_EX_COMPOSITED | \
+          win32con.WS_EX_LAYERED | \
+          win32con.WS_EX_NOACTIVATE | \
+          win32con.WS_EX_TOPMOST | \
+          win32con.WS_EX_TRANSPARENT
+win32api.SetWindowLong(hWindow, win32con.GWL_EXSTYLE, ex_style)
+title.pack()
+#window.mainloop()
+
 clear = lambda: os.system('cls')
 
 
@@ -82,3 +106,4 @@ while True:
             new_menu = []
         # print(text)
         text = ""
+
