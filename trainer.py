@@ -53,7 +53,7 @@ print (dics[name])
 while True:
     #dics[name]["stop"]=1
     #break    
-    #del dics[name]["up"]
+    del dics[name]["function"]
     #dics[name]["movie"]=1
     break
     print ("TRAINING",name+"\n")
