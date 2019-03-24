@@ -87,7 +87,9 @@ def print_menu(current, content_text, content_var):
 
 
 def make_for():
-    keyboard.type("for i in :")
+    if 'element' not in variables:
+        variables.append('element')
+    keyboard.type("for element in :")
     keyboard.press(Key.left)
 
 
@@ -155,7 +157,56 @@ def run_code():
 
 def make_print():
     keyboard.type("print(")
+    #keyboard.press(Key.left)
 
+
+def undo():
+    keyboard.press(Key.ctrl)
+    keyboard.press('z')
+    keyboard.release(Key.ctrl)
+    keyboard.release('z')
+
+
+def make_list():
+    while True:
+        content_text=""
+        var_name = voice_to_text("Enter list name",circle_canvas)
+        if var_name in reserved:
+           content_var.set(var_name+" is reserved")
+        elif var_name in variables:
+            content_var.set(var_name+" is used")
+        else:
+            variables.append(var_name)
+            keyboard.type(var_name+' = [')
+            var_value=voice_to_text("Enter element to add",circle_canvas)
+            lista=[]
+            while True:
+                content_text=""
+                try: 
+                    var_value=float(var_value)
+                except:
+                    try: 
+                        var_value=str(var_value)
+                    except:
+                        var_value=voice_to_text("Enter element to add",circle_canvas)
+                        continue
+                if type(var_value)==str:
+                    lista.append("'"+var_value+"'")
+                else:
+                    lista.append(str(var_value))
+                listaFinal=','.join(lista)
+                print ("HELLO")
+                var_value=voice_to_text("Enter element to add"+"\n"+listaFinal,circle_canvas)
+                if var_value in dics["stop_dic"]:
+                        lista=','.join(lista)
+                        keyboard.type(lista)
+                        keyboard.press(Key.right)
+                        keyboard.press(Key.enter)
+                        break
+                else:
+                    continue
+            break
+    
 
 def move_start():
     keyboard.press(Key.home)
@@ -273,11 +324,13 @@ window.geometry("-1+100")
 
 keyboard = Controller()
 
+
 menu = {'make': {'for': make_for,
                  'range': make_range,
                  'variable': make_var,
                  'print': make_print,
-                 'function': make_function},
+                 'function': make_function,
+                 'list':make_list},
         'move': {'start': move_start,
                  'left': move_left,
                  'right': move_right,
@@ -286,7 +339,8 @@ menu = {'make': {'for': make_for,
                  'end': move_end},
         'manual': manual,
         'use variable': use_variable,
-        'run': run_code
+        'run': run_code,
+        'undo': undo
         }
         
 current_menu = []
