@@ -35,6 +35,7 @@ names = ["call_variable_dic","call_function_dic","print_dic","run_dic","range_di
 dics = {"call_variable":{},"call_function":{},"print":{},"run":{},"range":{},"for":{}, "make":{}, "variable":{}, "name":{},
         "jump":{}, "move":{}, "start":{},  "up":{}, "down":{}, "left":{}, "right":{},
         "end":{}, "stop":{}, "manual": {}}
+conditionals=["if","else","elif","or"]
 
 variables = []
 words = {}
@@ -229,7 +230,6 @@ def make_list():
                 else:
                     lista.append(str(var_value))
                 listaFinal=','.join(lista)
-                print ("HELLO")
                 var_value=voice_to_text("Enter element to add"+"\n"+listaFinal,circle_canvas)
                 if var_value in dics["stop_dic"]:
                         lista=','.join(lista)
@@ -285,7 +285,7 @@ def manual(circle_canvas):
             keyboard.press(Key.enter)
         elif var_name == "space":
             keyboard.press(Key.space)
-        elif var_name == "delete":
+        elif var_name == "erase":
             keyboard.press(Key.backspace)
         elif var_name == "move left":
             move_left()
@@ -300,6 +300,16 @@ def manual(circle_canvas):
         elif var_name != '':
             keyboard.type(var_name)
 
+def type_parenthesis():
+    keyboard.type("(")
+def type_equal():
+    keyboard.type("=")
+def type_times():
+    keyboard.type("*")
+def type_semicolon():
+    keyboard.type(";")
+def type_doubleDots():
+    keyboard.type(":")
 
 def voice_recon(current_menu, circle_canvas):
     while True:
@@ -354,6 +364,25 @@ def voice_recon(current_menu, circle_canvas):
                                 else:
                                     menu['move'][new_direction]()
                         current_menu = []
+                    elif text=="type":
+                        while True:
+                            types=[]
+                            content_text=""
+                            for key in menu["type"]:
+                                types.append(key)
+                            string=""
+                            for i in range(len(types)):
+                                string+="{} : {}\n".format(i,types[i])
+                            variablesPrint=''.join(string)
+                            new = voice_to_text("Enter type number"+"\n"+variablesPrint,circle_canvas)
+                            try:
+                                number=int(new)
+                            except:
+                                continue
+                            break
+                        menu["type"][types[number]]()
+                            
+            
                     elif type(menu[text]) is dict:
                         current_menu.append(text)
                     else:
@@ -394,7 +423,14 @@ window.geometry("-1+100")
 keyboard = Controller()
 
 
-menu = {'make': {'for': make_for,
+menu = {
+        'conditionals': conditionals,
+        'type':{"parenthesis":type_parenthesis,
+                "equal":type_equal,
+                "times":type_times,
+                "doubleDots":type_doubleDots,
+                "semicolon":type_semicolon},
+        'make': {'for': make_for,
                  'range': make_range,
                  'variable': make_var,
                  'print': make_print,
