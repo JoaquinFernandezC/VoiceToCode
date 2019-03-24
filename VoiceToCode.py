@@ -182,7 +182,7 @@ def use_function(circle_canvas):
             content_var.set("{} function doesn't exist".format(var_name))
         else:
             content_var.set("Function Accepted")
-            keyboard.type(functions[int(var_name)].lower()+"()")
+            keyboard.type(functions[int(var_name)].lower()+"(")
             keyboard.press(Key.end)
             keyboard.press(Key.enter)
             break
@@ -300,7 +300,7 @@ def manual(circle_canvas):
         elif var_name == "end":
             move_end()
         elif var_name == "start":
-            move_end()
+            move_start()
         elif var_name == "undo":
             undo()
         elif var_name != '':
