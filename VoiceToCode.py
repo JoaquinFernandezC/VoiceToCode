@@ -388,7 +388,7 @@ def voice_recon(current_menu, circle_canvas):
                         while True: 
                             content_text=""
                             string=""
-                            for i in range(len(types)):
+                            for i in range(len(conditionals)):
                                 string+="{} : {}\n".format(i,conditionals[i])
                             variablesPrint=''.join(string)
                             new = voice_to_text("Enter conditional number"+"\n"+variablesPrint,circle_canvas)
