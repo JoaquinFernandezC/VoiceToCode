@@ -5,7 +5,6 @@ import speech_recognition as sr
 from threading import Thread
 from tkinter import Tk, Label, StringVar, Canvas
 
-
 def open_dic(name):
     try:
         with open('dic_picks\\' + name+'.pickle', 'rb') as handle:
@@ -100,7 +99,6 @@ def make_range():
 
 def make_var(circle_canvas):
     while True:
-        content_text = ""
         var_name = voice_to_text("Enter var name", circle_canvas)
         if var_name == "back":
             return
@@ -121,7 +119,6 @@ def make_var(circle_canvas):
 
 def make_function(circle_canvas):
     while True:
-        content_text = ""
         function_name = voice_to_text("Enter function name", circle_canvas)
         if function_name == "back":
             return
@@ -234,8 +231,7 @@ def move_up():
 
 def manual(circle_canvas):
     while True:
-        content_text=""
-        var_name = voice_to_text("Dictate \nor stop", circle_canvas)
+        var_name = voice_to_text("Dictate \n or stop", circle_canvas)
         if var_name in dics["stop_dic"]:
             break
         if var_name == "enter":

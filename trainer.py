@@ -42,7 +42,7 @@ text=""
 
 #stop_dic=openDic(stop_dic,"stop_dic")
 #make_dic=openDic(make_dic,"make_dic")
-name="move_dic"
+name="stop_dic"
 dics[name]=openDic(name)
 stop_dic=openDic('dic_picks\\stop_dic')
 print(stop_dic)
