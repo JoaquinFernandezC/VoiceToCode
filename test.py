@@ -1,3 +1,16 @@
-hi = "hello"
+print("hola mundo")
 
-print(hi)
+def back():
+     pass
+
+def buck():
+     pass
+def buck():
+     pass
+
+def roll():
+     pass
+def buck():
+     pass
+def it_back():
+     pass

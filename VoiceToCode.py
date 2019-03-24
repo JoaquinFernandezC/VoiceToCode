@@ -5,8 +5,6 @@ import speech_recognition as sr
 from threading import Thread
 from tkinter import Tk, Label, StringVar, Canvas
 
-import os,time
-
 
 def open_dic(name):
     try:
@@ -22,7 +20,7 @@ def save_dic(name):
         pickle.dump(dics[name], handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-reserved = ['False', 'None', 'True', 'and', 'as', 'assert', 'break',
+reserved = ['False', 'None', 'True', 'and', 'as', 'assert', 'back', 'break',
             'class', 'continue', 'def', 'del', 'elif', 'else', 'except',
             'exec', 'finally', 'for', 'from', 'global', 'if', 'import', 'in',
             'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return',
@@ -102,6 +100,8 @@ def make_var(circle_canvas):
     while True:
         content_text = ""
         var_name = voice_to_text("Enter var name", circle_canvas)
+        if var_name == "back":
+            return
         if var_name in reserved:
             content_var.set("Variable is reserved")
         elif var_name in variables:
@@ -121,6 +121,8 @@ def make_function(circle_canvas):
     while True:
         content_text = ""
         function_name = voice_to_text("Enter function name", circle_canvas)
+        if function_name == "back":
+            return
         if function_name in reserved:
             content_var.set("Function is reserved")
         elif function_name in functions:
@@ -130,6 +132,7 @@ def make_function(circle_canvas):
             break
     keyboard.type("def " + function_name.lower().replace(" ", "_") + "():\n pass")
     keyboard.press(Key.enter)
+
 
 def use_variable(circle_canvas):
     while True:
@@ -145,29 +148,38 @@ def use_variable(circle_canvas):
             keyboard.press(Key.enter)
             break
         
+
 def run_code():
     keyboard.press(Key.f5)
-    
+
+
 def make_print():
     keyboard.type("print(")
+
 
 def move_start():
     keyboard.press(Key.home)
 
+
 def move_end():
     keyboard.press(Key.end)
+
 
 def move_down():
     keyboard.press(Key.down)
     
+
 def move_left():
     keyboard.press(Key.left)
     
+
 def move_right():
     keyboard.press(Key.right)
     
+
 def move_up():
     keyboard.press(Key.up)
+
 
 def manual(circle_canvas):
     while True:
@@ -177,6 +189,7 @@ def manual(circle_canvas):
             break
         elif var_name != '':
             keyboard.type(var_name)
+
 
 def voice_recon(current_menu, circle_canvas):
     while True:
@@ -204,6 +217,8 @@ def voice_recon(current_menu, circle_canvas):
             if text in dics["stop_dic"]:
                 window.destroy()
                 break
+            elif text == "back":
+                current_menu.pop()
             elif menu_lenght == 0:
                 if text in menu:
                     if text == 'move':
