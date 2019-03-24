@@ -29,10 +29,10 @@ reserved = ['False', 'None', 'True', 'and', 'as', 'assert', 'back', 'break',
 variables = []
 functions = []
 
-names = ["print_dic","run_dic","range_dic","for_dic", "make_dic", "variable_dic", 
+names = ["call_variable_dic","call_function_dic","print_dic","run_dic","range_dic","for_dic", "make_dic", "variable_dic", 
          "name_dic", "jump_dic", "move_dic", "start_dic", "up_dic", "down_dic", 
          "left_dic", "right_dic", "end_dic", "stop_dic", "manual_dic"]
-dics = {"print":{},"run":{},"range":{},"for":{}, "make":{}, "variable":{}, "name":{},
+dics = {"call_variable":{},"call_function":{},"print":{},"run":{},"range":{},"for":{}, "make":{}, "variable":{}, "name":{},
         "jump":{}, "move":{}, "start":{},  "up":{}, "down":{}, "left":{}, "right":{},
         "end":{}, "stop":{}, "manual": {}}
 
@@ -87,9 +87,13 @@ def print_menu(current, content_text, content_var):
 
 
 def make_for():
-    if 'element' not in variables:
-        variables.append('element')
-    keyboard.type("for element in :")
+    var_name = voice_to_text("Enter var name", circle_canvas)
+    while True:
+        if var_name in variables:
+            var_name = voice_to_text("Enter var name", circle_canvas)
+        break
+    variables.append(var_name)
+    keyboard.type("for "+var_name+" in :")
     keyboard.press(Key.left)
 
 
@@ -130,7 +134,10 @@ def make_function(circle_canvas):
         else:
             functions.append(function_name)
             break
-    keyboard.type("def " + function_name.lower().replace(" ", "_") + "():\n pass")
+    keyboard.type("def " + function_name.lower().replace(" ", "_")) 
+    keyboard.type("(")
+    keyboard.press(Key.right)
+    keyboard.type(":\n pass")
     keyboard.press(Key.enter)
 
 
@@ -138,7 +145,7 @@ def use_variable(circle_canvas):
     while True:
         string=""
         for i in range(len(variables)):
-            string+="{} : {}\n".format(variables[i],i)
+            string+="{} : {}\n".format(i,variables[i])
         variablesPrint=''.join(string)
         var_name = voice_to_text("Enter var number"+"\n"+variablesPrint,circle_canvas)
         try:
@@ -159,16 +166,16 @@ def use_function(circle_canvas):
     while True:
         string=""
         for i in range(len(functions)):
-            string+="{} : {}\n".format(functions[i],i)
+            string+="{} : {}\n".format(i,functions[i])
         functionsPrint=''.join(string)
         var_name = voice_to_text("Enter function number"+"\n"+functionsPrint,circle_canvas)
         try:
             number=int(var_name)
         except:
             continue
-        if variables[int(var_name)] in reserved:
+        if functions[int(var_name)] in reserved:
             content_var.set("function is reserved")
-        elif variables[int(var_name)] not in variables:
+        elif functions[int(var_name)] not in functions:
             content_var.set("{} function doesn't exist".format(var_name))
         else:
             content_var.set("Function Accepted")
@@ -350,7 +357,7 @@ def voice_recon(current_menu, circle_canvas):
                     elif type(menu[text]) is dict:
                         current_menu.append(text)
                     else:
-                        if text == "use variable" or text == 'manual':
+                        if text == "call variable" or text=="call function" or text == 'manual':
                             menu[text](circle_canvas)
                         else:
                             menu[text]()
@@ -401,7 +408,8 @@ menu = {'make': {'for': make_for,
                  'end': move_end,
                  'jump': jump},
         'manual': manual,
-        'use variable': use_variable,
+        'call variable': use_variable,
+        'call function': use_function,
         'run': run_code,
         'undo': undo
         }
