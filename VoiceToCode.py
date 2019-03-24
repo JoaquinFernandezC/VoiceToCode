@@ -310,6 +310,8 @@ def type_semicolon():
     keyboard.type(";")
 def type_doubleDots():
     keyboard.type(":")
+def write_conditionals(i):
+    keyboard.type(conditionals[i])
 
 def voice_recon(current_menu, circle_canvas):
     while True:
@@ -382,7 +384,21 @@ def voice_recon(current_menu, circle_canvas):
                             break
                         menu["type"][types[number]]()
                             
-            
+                    elif text=="conditionals":
+                        while True: 
+                            content_text=""
+                            string=""
+                            for i in range(len(types)):
+                                string+="{} : {}\n".format(i,conditionals[i])
+                            variablesPrint=''.join(string)
+                            new = voice_to_text("Enter conditional number"+"\n"+variablesPrint,circle_canvas)
+                            try:
+                                number=int(new)
+                            except:
+                                continue
+                            break
+                        write_conditionals(number)
+                        
                     elif type(menu[text]) is dict:
                         current_menu.append(text)
                     else:
