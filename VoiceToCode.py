@@ -5,6 +5,7 @@ import speech_recognition as sr
 from threading import Thread
 from tkinter import Tk, Label, StringVar, Canvas
 
+
 def open_dic(name):
     try:
         with open('dic_picks\\' + name+'.pickle', 'rb') as handle:
@@ -30,10 +31,10 @@ functions = []
 
 names = ["print_dic","run_dic","range_dic","for_dic", "make_dic", "variable_dic", 
          "name_dic", "jump_dic", "move_dic", "start_dic", "up_dic", "down_dic", 
-         "left_dic", "right_dic", "end_dic", "stop_dic"]
+         "left_dic", "right_dic", "end_dic", "stop_dic", "manual_dic"]
 dics = {"print":{},"run":{},"range":{},"for":{}, "make":{}, "variable":{}, "name":{},
         "jump":{}, "move":{}, "start":{},  "up":{}, "down":{}, "left":{}, "right":{},
-        "end":{}, "stop":{}}
+        "end":{}, "stop":{}, "manual": {}}
 
 variables = []
 words = {}
@@ -167,7 +168,7 @@ def undo():
 def make_list():
     while True:
         content_text=""
-        var_name = voice_to_text("Enter list name",circle_canvas)
+        var_name = voice_to_text("Enter list name", circle_canvas)
         if var_name in reserved:
            content_var.set(var_name+" is reserved")
         elif var_name in variables:
@@ -175,7 +176,7 @@ def make_list():
         else:
             variables.append(var_name)
             keyboard.type(var_name+' = [')
-            var_value=voice_to_text("Enter element to add",circle_canvas)
+            var_value=voice_to_text("Enter element to add", circle_canvas)
             lista=[]
             while True:
                 content_text=""
@@ -229,6 +230,16 @@ def move_up():
     keyboard.press(Key.up)
 
 
+def jump(number):
+    keyboard.press(Key.ctrl)
+    keyboard.press(Key.home)
+    keyboard.release(Key.ctrl)
+    keyboard.release(Key.home)
+    for i in range(number-1):
+        keyboard.press(Key.down)
+        keyboard.release(Key.down)
+
+
 def manual(circle_canvas):
     while True:
         var_name = voice_to_text("Dictate \n or stop", circle_canvas)
@@ -236,6 +247,20 @@ def manual(circle_canvas):
             break
         if var_name == "enter":
             keyboard.press(Key.enter)
+        elif var_name == "space":
+            keyboard.press(Key.space)
+        elif var_name == "delete":
+            keyboard.press(Key.backspace)
+        elif var_name == "move left":
+            move_left()
+        elif var_name == "move right":
+            move_right()
+        elif var_name == "move up":
+            move_up()
+        elif var_name == "move down":
+            move_down()
+        elif var_name == "undo":
+            undo()
         elif var_name != '':
             keyboard.type(var_name)
 
@@ -281,7 +306,17 @@ def voice_recon(current_menu, circle_canvas):
                             if new_direction in dics["stop_dic"]:
                                 break
                             elif new_direction in menu['move']:
-                                menu['move'][new_direction]()
+                                if new_direction == "jump":
+                                    jump_number = ""
+                                    while type(jump_number) is not int:
+                                        jump_number = voice_to_text("Which line?", circle_canvas)
+                                        try:
+                                            jump_number = int(jump_number)
+                                        except ValueError:
+                                            pass
+                                    jump(jump_number)
+                                else:
+                                    menu['move'][new_direction]()
                         current_menu = []
                     elif type(menu[text]) is dict:
                         current_menu.append(text)
@@ -328,13 +363,14 @@ menu = {'make': {'for': make_for,
                  'variable': make_var,
                  'print': make_print,
                  'function': make_function,
-                 'list':make_list},
+                 'list': make_list},
         'move': {'start': move_start,
                  'left': move_left,
                  'right': move_right,
                  'up': move_up,
                  'down': move_down,
-                 'end': move_end},
+                 'end': move_end,
+                 'jump': jump},
         'manual': manual,
         'use variable': use_variable,
         'run': run_code,
