@@ -25,7 +25,7 @@ def voice_to_text(needed_text, circle_canvas):
     while True:
         with microphone as source:
             circle_canvas.itemconfig(circle, fill="green")
-            audio = recognizer.listen(source, phrase_time_limit=3)
+            audio = recognizer.listen(source, phrase_time_limit=2)
         try:
             content_text = (needed_text + '\n')
             content_var.set(content_text)
@@ -77,7 +77,7 @@ def voice_recon(current_menu, circle_canvas):
         print_menu(current_menu, content_text, content_var)
         with microphone as source:
             circle_canvas.itemconfig(circle, fill="green")
-            audio = recognizer.listen(source, phrase_time_limit=3)
+            audio = recognizer.listen(source, phrase_time_limit=2)
 
         try:
             content_text = ""
