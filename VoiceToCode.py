@@ -135,14 +135,43 @@ def make_function(circle_canvas):
 
 def use_variable(circle_canvas):
     while True:
-        var_name = voice_to_text("Enter var name",circle_canvas)
-        if var_name in reserved:
+        string=""
+        for i in range(len(variables)):
+            string+="{} : {}\n".format(variables[i],i)
+        variablesPrint=''.join(string)
+        var_name = voice_to_text("Enter var number"+"\n"+variablesPrint,circle_canvas)
+        try:
+            number=int(var_name)
+        except:
+            continue
+        if variables[int(var_name)] in reserved:
             content_var.set("Variable is reserved")
-        elif var_name not in variables:
+        elif variables[int(var_name)] not in variables:
             content_var.set("{} variable doesn't exist".format(var_name))
         else:
             content_var.set("Variable Accepted")
-            keyboard.type(var_name.lower())
+            keyboard.type(variables[int(var_name)].lower())
+            keyboard.press(Key.end)
+            keyboard.press(Key.enter)
+            break
+def use_function(circle_canvas):
+    while True:
+        string=""
+        for i in range(len(functions)):
+            string+="{} : {}\n".format(functions[i],i)
+        functionsPrint=''.join(string)
+        var_name = voice_to_text("Enter function number"+"\n"+functionsPrint,circle_canvas)
+        try:
+            number=int(var_name)
+        except:
+            continue
+        if variables[int(var_name)] in reserved:
+            content_var.set("function is reserved")
+        elif variables[int(var_name)] not in variables:
+            content_var.set("{} function doesn't exist".format(var_name))
+        else:
+            content_var.set("Function Accepted")
+            keyboard.type(functions[int(var_name)].lower())
             keyboard.press(Key.end)
             keyboard.press(Key.enter)
             break
