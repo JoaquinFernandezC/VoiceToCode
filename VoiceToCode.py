@@ -138,7 +138,7 @@ def make_function(circle_canvas):
     keyboard.type("def " + function_name.lower().replace(" ", "_")) 
     keyboard.type("(")
     keyboard.press(Key.right)
-    keyboard.type(":\n pass")
+    keyboard.type(":\n")
     keyboard.press(Key.enter)
 
 
