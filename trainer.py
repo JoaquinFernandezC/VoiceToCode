@@ -53,8 +53,8 @@ print (dics[name])
 while True:
     #dics[name]["stop"]=1
     #break    
-    #del dics[name]["buck"]
-    dics[name]["exit"]=1
+    #del dics[name]["up"]
+    #dics[name]["movie"]=1
     break
     print ("TRAINING",name+"\n")
     with microphone as source:
