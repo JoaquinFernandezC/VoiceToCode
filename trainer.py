@@ -28,9 +28,11 @@ import pickle
 recognizer = sr.Recognizer()
 microphone = sr.Microphone()
 
-names=["print_dic","run_dic","range_dic","for_dic", "make_dic", "variable_dic", "name_dic", "jump_dic", "move_dic", "start_dic", "up_dic", "down_dic", "left_dic", "right_dic", "end_dic"]
+names=["print_dic", "run_dic", "range_dic", "for_dic", "make_dic", "variable_dic", "name_dic", "jump_dic", "move_dic",
+       "start_dic", "up_dic", "down_dic", "left_dic", "right_dic", "end_dic", "manual_dic"]
 
-dics={"print":{},"run":{},"range":{},"for":{}, "make":{}, "variable":{}, "name":{}, "jump":{}, "move":{}, "start":{},  "up":{}, "down":{}, "left":{}, "right":{}, "end":{}}
+dics={"print": {}, "run": {}, "range": {}, "for": {}, "make": {}, "variable": {}, "name": {}, "jump": {}, "move": {},
+      "start": {},  "up": {}, "down": {}, "left": {}, "right": {}, "end": {}, "manual": {}}
 
 for name in names:
     dics[name]=openDic(name)
@@ -42,7 +44,7 @@ text=""
 
 #stop_dic=openDic(stop_dic,"stop_dic")
 #make_dic=openDic(make_dic,"make_dic")
-name="move_dic"
+name="manual_dic"
 dics[name]=openDic(name)
 stop_dic=openDic('dic_picks\\stop_dic')
 print(stop_dic)
@@ -53,7 +55,7 @@ print (dics[name])
 while True:
     #dics[name]["stop"]=1
     #break    
-    #del dics[name]["up"]
+    del dics[name]["Manuel Manuel"]
     #dics[name]["movie"]=1
     break
     print ("TRAINING",name+"\n")

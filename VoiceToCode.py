@@ -5,8 +5,6 @@ import speech_recognition as sr
 from threading import Thread
 from tkinter import Tk, Label, StringVar, Canvas
 
-import os,time
-
 
 def open_dic(name):
     try:
@@ -22,7 +20,7 @@ def save_dic(name):
         pickle.dump(dics[name], handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-reserved = ['False', 'None', 'True', 'and', 'as', 'assert', 'break',
+reserved = ['False', 'None', 'True', 'and', 'as', 'assert', 'back', 'break',
             'class', 'continue', 'def', 'del', 'elif', 'else', 'except',
             'exec', 'finally', 'for', 'from', 'global', 'if', 'import', 'in',
             'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return',
@@ -33,10 +31,10 @@ functions = []
 
 names = ["print_dic","run_dic","range_dic","for_dic", "make_dic", "variable_dic", 
          "name_dic", "jump_dic", "move_dic", "start_dic", "up_dic", "down_dic", 
-         "left_dic", "right_dic", "end_dic", "stop_dic"]
+         "left_dic", "right_dic", "end_dic", "stop_dic", "manual_dic"]
 dics = {"print":{},"run":{},"range":{},"for":{}, "make":{}, "variable":{}, "name":{},
         "jump":{}, "move":{}, "start":{},  "up":{}, "down":{}, "left":{}, "right":{},
-        "end":{}, "stop":{}}
+        "end":{}, "stop":{}, "manual": {}}
 
 variables = []
 words = {}
@@ -102,8 +100,9 @@ def make_range():
 
 def make_var(circle_canvas):
     while True:
-        content_text = ""
         var_name = voice_to_text("Enter var name", circle_canvas)
+        if var_name == "back":
+            return
         if var_name in reserved:
             content_var.set("Variable is reserved")
         elif var_name in variables:
@@ -121,8 +120,9 @@ def make_var(circle_canvas):
 
 def make_function(circle_canvas):
     while True:
-        content_text = ""
         function_name = voice_to_text("Enter function name", circle_canvas)
+        if function_name == "back":
+            return
         if function_name in reserved:
             content_var.set("Function is reserved")
         elif function_name in functions:
@@ -132,6 +132,7 @@ def make_function(circle_canvas):
             break
     keyboard.type("def " + function_name.lower().replace(" ", "_") + "():\n pass")
     keyboard.press(Key.enter)
+
 
 def use_variable(circle_canvas):
     while True:
@@ -176,21 +177,27 @@ def use_function(circle_canvas):
             keyboard.press(Key.enter)
             break
         
+
 def run_code():
     keyboard.press(Key.f5)
-    
+
+
 def make_print():
     keyboard.type("print(")
     #keyboard.press(Key.left)
+
+
 def undo():
     keyboard.press(Key.ctrl)
     keyboard.press('z')
     keyboard.release(Key.ctrl)
     keyboard.release('z')
+
+
 def make_list():
     while True:
         content_text=""
-        var_name = voice_to_text("Enter list name",circle_canvas)
+        var_name = voice_to_text("Enter list name", circle_canvas)
         if var_name in reserved:
            content_var.set(var_name+" is reserved")
         elif var_name in variables:
@@ -198,7 +205,7 @@ def make_list():
         else:
             variables.append(var_name)
             keyboard.type(var_name+' = [')
-            var_value=voice_to_text("Enter element to add",circle_canvas)
+            var_value=voice_to_text("Enter element to add", circle_canvas)
             lista=[]
             while True:
                 content_text=""
@@ -231,29 +238,61 @@ def make_list():
 def move_start():
     keyboard.press(Key.home)
 
+
 def move_end():
     keyboard.press(Key.end)
+
 
 def move_down():
     keyboard.press(Key.down)
     
+
 def move_left():
     keyboard.press(Key.left)
     
+
 def move_right():
     keyboard.press(Key.right)
     
+
 def move_up():
     keyboard.press(Key.up)
 
+
+def jump(number):
+    keyboard.press(Key.ctrl)
+    keyboard.press(Key.home)
+    keyboard.release(Key.ctrl)
+    keyboard.release(Key.home)
+    for i in range(number-1):
+        keyboard.press(Key.down)
+        keyboard.release(Key.down)
+
+
 def manual(circle_canvas):
     while True:
-        content_text=""
-        var_name = voice_to_text("Dictate \nor stop", circle_canvas)
+        var_name = voice_to_text("Dictate \n or stop", circle_canvas)
         if var_name in dics["stop_dic"]:
             break
+        if var_name == "enter":
+            keyboard.press(Key.enter)
+        elif var_name == "space":
+            keyboard.press(Key.space)
+        elif var_name == "delete":
+            keyboard.press(Key.backspace)
+        elif var_name == "move left":
+            move_left()
+        elif var_name == "move right":
+            move_right()
+        elif var_name == "move up":
+            move_up()
+        elif var_name == "move down":
+            move_down()
+        elif var_name == "undo":
+            undo()
         elif var_name != '':
             keyboard.type(var_name)
+
 
 def voice_recon(current_menu, circle_canvas):
     while True:
@@ -281,6 +320,8 @@ def voice_recon(current_menu, circle_canvas):
             if text in dics["stop_dic"]:
                 window.destroy()
                 break
+            elif text == "back":
+                current_menu.pop()
             elif menu_lenght == 0:
                 if text in menu:
                     if text == 'move':
@@ -294,7 +335,17 @@ def voice_recon(current_menu, circle_canvas):
                             if new_direction in dics["stop_dic"]:
                                 break
                             elif new_direction in menu['move']:
-                                menu['move'][new_direction]()
+                                if new_direction == "jump":
+                                    jump_number = ""
+                                    while type(jump_number) is not int:
+                                        jump_number = voice_to_text("Which line?", circle_canvas)
+                                        try:
+                                            jump_number = int(jump_number)
+                                        except ValueError:
+                                            pass
+                                    jump(jump_number)
+                                else:
+                                    menu['move'][new_direction]()
                         current_menu = []
                     elif type(menu[text]) is dict:
                         current_menu.append(text)
@@ -341,13 +392,14 @@ menu = {'make': {'for': make_for,
                  'variable': make_var,
                  'print': make_print,
                  'function': make_function,
-                 'list':make_list},
+                 'list': make_list},
         'move': {'start': move_start,
                  'left': move_left,
                  'right': move_right,
                  'up': move_up,
                  'down': move_down,
-                 'end': move_end},
+                 'end': move_end,
+                 'jump': jump},
         'manual': manual,
         'use variable': use_variable,
         'run': run_code,
