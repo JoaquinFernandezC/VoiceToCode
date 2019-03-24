@@ -7,61 +7,70 @@ from tkinter import Tk, Label, StringVar, Canvas
 
 import os,time
 
-def openDic(name):
+
+def open_dic(name):
     try:
-        with open(name+'.pickle','rb') as handle:
-            dic=pickle.load(handle)
+        with open('dic_picks\\' + name+'.pickle', 'rb') as handle:
+            dic = pickle.load(handle)
     except:
-        dic={}
+        dic = {}
     return dic
 
-def saveDic(name):
+
+def save_dic(name):
     with open(name+'.pickle', 'wb') as handle:
         pickle.dump(dics[name], handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-reserved=['False', 'None', 'True', 'and', 'as', 'assert', 'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield']
-variables=[]
 
-names=["print_dic","range_dic","stop_dic","for_dic", "make_dic", "variable_dic", "name_dic", "jump_dic", "start_dic", "up_dic", "down_dic", "end_dic"]
-dics={"print":{},"stop":{},"for":{}, "make":{}, "variable":{}, "name":{}, "jump":{}, "start":{}, "up":{}, "down":{}, "end":{}}
+reserved = ['False', 'None', 'True', 'and', 'as', 'assert', 'break',
+            'class', 'continue', 'def', 'del', 'elif', 'else', 'except',
+            'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is',
+            'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try',
+            'while', 'with', 'yield']
 
-variables=[]
-words={}
+variables = []
+
+names = ["print_dic","run_dic","range_dic","for_dic", "make_dic", "variable_dic", 
+         "name_dic", "jump_dic", "move_dic", "start_dic", "up_dic", "down_dic", 
+         "left_dic", "right_dic", "end_dic", "stop_dic"]
+dics = {"print":{},"run":{},"range":{},"for":{}, "make":{}, "variable":{}, "name":{},
+        "jump":{}, "move":{}, "start":{},  "up":{}, "down":{}, "left":{}, "right":{},
+        "end":{}, "stop":{}}
+
+variables = []
+words = {}
 for name in names:
-    dics[name]=openDic(name)
-    for el in dics[name]:  
-        words[el]=name[0:-4]
+    dics[name] = open_dic(name)
+    for el in dics[name]:
+        words[el] = name[0:-4]
 
 recognizer = sr.Recognizer()
 microphone = sr.Microphone()
 
-recognizer.energy_threshold = 50
+recognizer.energy_threshold = 30
 recognizer.dynamic_energy_threshold = False
+
 
 def voice_to_text(needed_text, circle_canvas):
     text = ""
     content_text = ""
     content_text += (needed_text + '\n')
     content_var.set(content_text)
-    
-
-
     while True:
         with microphone as source:
             circle_canvas.itemconfig(circle, fill="green")
-            audio = recognizer.listen(source, phrase_time_limit=3)
+            audio = recognizer.listen(source, phrase_time_limit=2)
         try:
             content_text = (needed_text + '\n')
             content_var.set(content_text)
             circle_canvas.itemconfig(circle, fill="red")
             text = recognizer.recognize_google(audio)
-            
         except:
             pass
-        if text != "" or text != None:
+        if text != "":
                 break
     return text
-    
+
 
 def print_menu(current, content_text, content_var):
     if len(current) > 0:
@@ -81,36 +90,36 @@ def print_menu(current, content_text, content_var):
 def make_for():
     keyboard.type("for i in :")
     keyboard.press(Key.left)
-    
+
+
 def make_range():
     keyboard.type("range()")
     keyboard.press(Key.left)
 
+
 def make_var(circle_canvas):
     while True:
         content_text=""
-        var_name = voice_to_text("Enter var name",circle_canvas)
+        var_name = voice_to_text("Enter var name", circle_canvas)
         if var_name in reserved:
-           content_var.set("Variable is reserved")
+            content_var.set("Variable is reserved")
         elif var_name in variables:
             content_var.set("Variable is used")
         else:
             variables.append(var_name)
-            var_value=voice_to_text("Enter var value",circle_canvas)
+            var_value = voice_to_text("Enter var value", circle_canvas)
             break
     keyboard.type(var_name.lower().replace(" ", "_") + " = "+var_value+"\n")
 
+
 def use_variable(circle_canvas):
     while True:
-        var_name=voice_to_text("Enter var name",circle_canvas)
+        var_name = voice_to_text("Enter var name",circle_canvas)
         if var_name in reserved:
-            #print("Variable is reserved")
             content_var.set("Variable is reserved")
         elif var_name not in variables:
-            #print ("{} variable doesn't exist".format(var_name))
             content_var.set("{} variable doesn't exist".format(var_name))
         else:
-           # print ("Variable Accepted")
             content_var.set("Variable Accepted")
             keyboard.type(var_name.lower())
             keyboard.press(Key.end)
@@ -122,7 +131,6 @@ def run_code():
     
 def make_print():
     keyboard.type("print(")
-    #keyboard.press(Key.left)
 
 def move_start():
     keyboard.press(Key.home)
@@ -142,10 +150,15 @@ def move_right():
 def move_up():
     keyboard.press(Key.up)
 
+def manual(circle_canvas):
+    while True:
+        content_text=""
+        var_name = voice_to_text("Dictate \nor stop", circle_canvas)
+        if var_name in dics["stop_dic"]:
+            break
+        elif var_name != '':
+            keyboard.type(var_name)
 
-
-#clear()
-#print_menu(current_menu)
 def voice_recon(current_menu, circle_canvas):
     while True:
         text = ""
@@ -155,8 +168,8 @@ def voice_recon(current_menu, circle_canvas):
         print_menu(current_menu, content_text, content_var)
         with microphone as source:
             circle_canvas.itemconfig(circle, fill="green")
-            audio = recognizer.listen(source,phrase_time_limit=3)
-            
+            audio = recognizer.listen(source, phrase_time_limit=2)
+
         try:
             content_text = ""
             content_var.set(content_text)
@@ -165,22 +178,32 @@ def voice_recon(current_menu, circle_canvas):
             text = recognizer.recognize_google(audio)
         except:
             pass
-            
+        
         if text != "":
             if text in words:
-                text=words[text]
+                text = words[text]
             if text in dics["stop_dic"]:
                 window.destroy()
                 break
-            if text == "inspect":
-                print (dics)
-                
             elif menu_lenght == 0:
                 if text in menu:
-                    if type(menu[text]) is dict:
+                    if text == 'move':
+                        while True:
+                            content_text = "Enter direction\nto move cursor \nor stop:\n"
+                            for key in menu['move']:
+                                content_text += key+'\n'
+                            new_direction = voice_to_text(content_text, circle_canvas)
+                            if new_direction in words:
+                                new_direction = words[new_direction]
+                            if new_direction in dics["stop_dic"]:
+                                break
+                            elif new_direction in menu['move']:
+                                menu['move'][new_direction]()
+                        current_menu = []
+                    elif type(menu[text]) is dict:
                         current_menu.append(text)
                     else:
-                        if text=="use variable":
+                        if text == "use variable" or text == 'manual':
                             menu[text](circle_canvas)
                         else:
                             menu[text]()
@@ -193,13 +216,11 @@ def voice_recon(current_menu, circle_canvas):
                     if type(new_option) is dict:
                         current_menu.append(text)
                     else:
-                        if text=="variable":
+                        if text == "variable":
                             menu_option[text](circle_canvas)
                         else:
                             menu_option[text]()
                         current_menu = []
-                        
-            #print(text)
             text = ""
 
 # GUI Window using Tkinter
@@ -223,17 +244,18 @@ menu = { 'make' : {'for': make_for,
                    'variable': make_var,
                    'print': make_print},
     
-        'movie' : {'start': move_start,
+        'move' : {'start': move_start,
                   'left': move_left,
                   'right':move_right,
                   'up': move_up,
                   'down': move_down,
                   'end': move_end},
-                  
+        'manual' : manual,
         'use variable' : use_variable,
         
         'run': run_code
-        }    
+        }
+        
 current_menu = []
 content_var.set(content_text)
 print_menu(current_menu, content_text, content_var)
@@ -246,6 +268,3 @@ t = Thread(target=voice_recon, args=(current_menu, circle_canvas))
 t.daemon = True
 t.start()
 window.mainloop()
-        
-    
-    
