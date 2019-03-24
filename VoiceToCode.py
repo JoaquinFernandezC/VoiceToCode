@@ -24,11 +24,12 @@ def save_dic(name):
 
 reserved = ['False', 'None', 'True', 'and', 'as', 'assert', 'break',
             'class', 'continue', 'def', 'del', 'elif', 'else', 'except',
-            'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is',
-            'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try',
-            'while', 'with', 'yield']
+            'exec', 'finally', 'for', 'from', 'global', 'if', 'import', 'in',
+            'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return',
+            'try', 'while', 'with', 'yield']
 
 variables = []
+functions = []
 
 names = ["print_dic", "range_dic", "stop_dic", "for_dic", "make_dic", "variable_dic",
          "name_dic", "jump_dic", "start_dic", "up_dic", "down_dic", "end_dic"]
@@ -45,7 +46,7 @@ for name in names:
 recognizer = sr.Recognizer()
 microphone = sr.Microphone()
 
-recognizer.energy_threshold = 50
+recognizer.energy_threshold = 30
 recognizer.dynamic_energy_threshold = False
 
 
@@ -97,7 +98,7 @@ def make_range():
 
 def make_var(circle_canvas):
     while True:
-        content_text=""
+        content_text = ""
         var_name = voice_to_text("Enter var name", circle_canvas)
         if var_name in reserved:
             content_var.set("Variable is reserved")
@@ -107,8 +108,26 @@ def make_var(circle_canvas):
             variables.append(var_name)
             var_value = voice_to_text("Enter var value", circle_canvas)
             break
+    try:
+        float(var_value)
+    except ValueError:
+        var_value = "\"" + var_value + "\""
     keyboard.type(var_name.lower().replace(" ", "_") + " = "+var_value+"\n")
 
+
+def make_function(circle_canvas):
+    while True:
+        content_text = ""
+        function_name = voice_to_text("Enter function name", circle_canvas)
+        if function_name in reserved:
+            content_var.set("Function is reserved")
+        elif function_name in functions:
+            content_var.set("Function already defined")
+        else:
+            functions.append(function_name)
+            break
+    keyboard.type("def " + function_name.lower().replace(" ", "_") + "():\n pass")
+    keyboard.press(Key.enter)
 
 def use_variable(circle_canvas):
     while True:
@@ -178,7 +197,7 @@ def voice_recon(current_menu, circle_canvas):
                     if type(new_option) is dict:
                         current_menu.append(text)
                     else:
-                        if text == "variable":
+                        if text == "variable" or text == "function":
                             menu_option[text](circle_canvas)
                         else:
                             menu_option[text]()
@@ -206,7 +225,8 @@ keyboard = Controller()
 menu = {'make': {'for': make_for,
                  'range': make_range,
                  'variable': make_var,
-                 'print': make_print},
+                 'print': make_print,
+                 'function':make_function},
         'jump': {'start': 1,
                  'up': 2,
                  'down': 3,
