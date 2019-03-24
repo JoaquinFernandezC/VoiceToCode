@@ -87,8 +87,6 @@ def voice_recon(current_menu, circle_canvas):
             text = recognizer.recognize_google(audio)
             if text != "":
                 if text == "stop":
-                    print("exiting...")
-                    print("asd")
                     window.destroy()
                     break
 
@@ -115,8 +113,6 @@ def voice_recon(current_menu, circle_canvas):
                 text = ""
         except:
             pass
-    print("hola")
-
 
 
 # GUI Window using Tkinter
