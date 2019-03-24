@@ -28,9 +28,9 @@ import pickle
 recognizer = sr.Recognizer()
 microphone = sr.Microphone()
 
-names=["print_dic","run_dic","range_dic","for_dic", "make_dic", "variable_dic", "name_dic", "jump_dic", "start_dic", "up_dic", "down_dic", "end_dic"]
+names=["print_dic","run_dic","range_dic","for_dic", "make_dic", "variable_dic", "name_dic", "jump_dic", "move_dic", "start_dic", "up_dic", "down_dic", "left_dic", "right_dic", "end_dic"]
 
-dics={"print":{},"run":{},"for":{}, "make":{}, "variable":{}, "name":{}, "jump":{}, "start":{}, "up":{}, "down":{}, "end":{}}
+dics={"print":{},"run":{},"range":{},"for":{}, "make":{}, "variable":{}, "name":{}, "jump":{}, "move":{}, "start":{},  "up":{}, "down":{}, "left":{}, "right":{}, "end":{}}
 
 for name in names:
     dics[name]=openDic(name)
@@ -42,9 +42,10 @@ text=""
 
 #stop_dic=openDic(stop_dic,"stop_dic")
 #make_dic=openDic(make_dic,"make_dic")
-name="print_dic"
+name="start_dic"
 dics[name]=openDic(name)
-stop_dic=openDic("stop_dic")
+stop_dic=openDic('dic_picks\\stop_dic')
+print(stop_dic)
 
 #del dics["for_dic"]["endd"]
 print (dics[name])
@@ -52,14 +53,15 @@ print (dics[name])
 while True:
     #dics[name]["stop"]=1
     #break    
-    #del dics[name]["up"]
-    dics[name]["parent"]=1
+    del dics[name]["sorry sorry"]
+    #dics[name]["write"]=1
     break
     print ("TRAINING",name+"\n")
     with microphone as source:
             recognizer.adjust_for_ambient_noise(source)
-            clear()
+            #clear()
             #print_menu(new_menu)
+            print("speak!")
             audio = recognizer.listen(source,phrase_time_limit=2)
             print("...")
     try:

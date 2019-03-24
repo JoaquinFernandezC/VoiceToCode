@@ -31,10 +31,12 @@ reserved = ['False', 'None', 'True', 'and', 'as', 'assert', 'break',
 variables = []
 functions = []
 
-names = ["print_dic", "range_dic", "stop_dic", "for_dic", "make_dic", "variable_dic",
-         "name_dic", "jump_dic", "start_dic", "up_dic", "down_dic", "end_dic"]
-dics = {"print": {}, "stop": {}, "for": {}, "make": {}, "variable": {}, "name": {},
-        "jump": {}, "start": {}, "up": {}, "down": {}, "end": {}}
+names = ["print_dic","run_dic","range_dic","for_dic", "make_dic", "variable_dic", 
+         "name_dic", "jump_dic", "move_dic", "start_dic", "up_dic", "down_dic", 
+         "left_dic", "right_dic", "end_dic", "stop_dic"]
+dics = {"print":{},"run":{},"range":{},"for":{}, "make":{}, "variable":{}, "name":{},
+        "jump":{}, "move":{}, "start":{},  "up":{}, "down":{}, "left":{}, "right":{},
+        "end":{}, "stop":{}}
 
 variables = []
 words = {}
@@ -66,7 +68,7 @@ def voice_to_text(needed_text, circle_canvas):
             text = recognizer.recognize_google(audio)
         except:
             pass
-        if text != "" or text is not None:
+        if text != "":
                 break
     return text
 
@@ -142,15 +144,39 @@ def use_variable(circle_canvas):
             keyboard.press(Key.end)
             keyboard.press(Key.enter)
             break
-
-
+        
 def run_code():
     keyboard.press(Key.f5)
-
-
+    
 def make_print():
     keyboard.type("print(")
 
+def move_start():
+    keyboard.press(Key.home)
+
+def move_end():
+    keyboard.press(Key.end)
+
+def move_down():
+    keyboard.press(Key.down)
+    
+def move_left():
+    keyboard.press(Key.left)
+    
+def move_right():
+    keyboard.press(Key.right)
+    
+def move_up():
+    keyboard.press(Key.up)
+
+def manual(circle_canvas):
+    while True:
+        content_text=""
+        var_name = voice_to_text("Dictate \nor stop", circle_canvas)
+        if var_name in dics["stop_dic"]:
+            break
+        elif var_name != '':
+            keyboard.type(var_name)
 
 def voice_recon(current_menu, circle_canvas):
     while True:
@@ -171,20 +197,32 @@ def voice_recon(current_menu, circle_canvas):
             text = recognizer.recognize_google(audio)
         except:
             pass
-
+        
         if text != "":
             if text in words:
                 text = words[text]
             if text in dics["stop_dic"]:
                 window.destroy()
                 break
-
             elif menu_lenght == 0:
                 if text in menu:
-                    if type(menu[text]) is dict:
+                    if text == 'move':
+                        while True:
+                            content_text = "Enter direction\nto move cursor \nor stop:\n"
+                            for key in menu['move']:
+                                content_text += key+'\n'
+                            new_direction = voice_to_text(content_text, circle_canvas)
+                            if new_direction in words:
+                                new_direction = words[new_direction]
+                            if new_direction in dics["stop_dic"]:
+                                break
+                            elif new_direction in menu['move']:
+                                menu['move'][new_direction]()
+                        current_menu = []
+                    elif type(menu[text]) is dict:
                         current_menu.append(text)
                     else:
-                        if text == "use variable":
+                        if text == "use variable" or text == 'manual':
                             menu[text](circle_canvas)
                         else:
                             menu[text]()
@@ -204,7 +242,6 @@ def voice_recon(current_menu, circle_canvas):
                         current_menu = []
             text = ""
 
-
 # GUI Window using Tkinter
 window = Tk()
 content_text = ""
@@ -221,20 +258,22 @@ window.geometry("-1+100")
 
 keyboard = Controller()
 
-
 menu = {'make': {'for': make_for,
                  'range': make_range,
                  'variable': make_var,
                  'print': make_print,
-                 'function':make_function},
-        'jump': {'start': 1,
-                 'up': 2,
-                 'down': 3,
-                 'end': 4},
+                 'function': make_function},
+        'move': {'start': move_start,
+                 'left': move_left,
+                 'right': move_right,
+                 'up': move_up,
+                 'down': move_down,
+                 'end': move_end},
+        'manual': manual,
         'use variable': use_variable,
-
         'run': run_code
         }
+        
 current_menu = []
 content_var.set(content_text)
 print_menu(current_menu, content_text, content_var)
