@@ -238,6 +238,8 @@ def manual(circle_canvas):
         var_name = voice_to_text("Dictate \nor stop", circle_canvas)
         if var_name in dics["stop_dic"]:
             break
+        if var_name == "enter":
+            keyboard.press(Key.enter)
         elif var_name != '':
             keyboard.type(var_name)
 
