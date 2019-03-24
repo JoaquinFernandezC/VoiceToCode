@@ -218,7 +218,6 @@ window.geometry("-1+100")
 
 keyboard = Controller()
 
-
 menu = { 'make' : {'for': make_for,
                    'range': make_range,
                    'variable': make_var,
