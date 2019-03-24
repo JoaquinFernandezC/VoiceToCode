@@ -58,7 +58,7 @@ def voice_to_text(needed_text, circle_canvas):
             
         except:
             pass
-        if text != "" or text != None:
+        if text != "":
                 break
     return text
     
@@ -79,7 +79,9 @@ def print_menu(current, content_text, content_var):
 
 
 def make_for():
-    keyboard.type("for i in :")
+    if 'element' not in variables:
+        variables.append('element')
+    keyboard.type("for element in :")
     keyboard.press(Key.left)
     
 def make_range():
@@ -121,8 +123,86 @@ def run_code():
 def make_print():
     keyboard.type("print(")
     #keyboard.press(Key.left)
-
-
+def undo():
+    keyboard.press(Key.ctrl)
+    keyboard.press('z')
+    keyboard.release(Key.ctrl)
+    keyboard.release('z')
+def make_list():
+    while True:
+        content_text=""
+        var_name = voice_to_text("Enter list name",circle_canvas)
+        if var_name in reserved:
+           content_var.set(var_name+" is reserved")
+        elif var_name in variables:
+            content_var.set(var_name+" is used")
+        else:
+            variables.append(var_name)
+            keyboard.type(var_name+' = [')
+            var_value=voice_to_text("Enter element to add",circle_canvas)
+            lista=[]
+            while True:
+                """
+                if var_value:
+                    keyboard.type("]")
+                    keyboard.press(Key.enter)
+                    break
+                else:
+                    """
+                content_text=""
+                try: 
+                    var_value=float(var_value)
+                except:
+                    try: 
+                        var_value=str(var_value)
+                    except:
+                        var_value=voice_to_text("Enter element to add",circle_canvas)
+                        continue
+                if type(var_value)==str:
+                    lista.append("'"+var_value+"'")
+                else:
+                    lista.append(str(var_value))
+                listaFinal=','.join(lista)
+                print ("HELLO")
+                var_value=voice_to_text("Enter element to add"+"\n"+listaFinal,circle_canvas)
+                if var_value in dics["stop_dic"]:
+                        lista=','.join(lista)
+                        keyboard.type(lista)
+                        keyboard.press(Key.right)
+                        keyboard.press(Key.enter)
+                        break
+                else:
+                    continue
+                
+                """
+                var_value=var_name.split()
+                if len(var_value)>1:
+                    if var_value[0] in ["string","word"]:
+                        var_value=var_value[1]
+                    elif var_value[0] in ["number","int","integer"]:
+                        try:
+                            var_value=float(var_value[1])
+                            lista.append(var_value)
+                            #keyboard.type(var_value)
+                        except:
+                            var_value=voice_to_text("Enter element to add",circle_canvas)
+                            continue
+                """
+                                    
+                
+                
+                """
+                var_value=voice_to_text("Enter element to add",circle_canvas)
+                if var_value not in dics["stop_dic"]:
+                    keyboard.type(', ')
+                else:
+                    keyboard.type("]")
+                    keyboard.press(Key.enter)
+                    break
+                    #keyboard.type(var_value)
+                """
+            break
+    
 
 
 #clear()
@@ -197,10 +277,12 @@ window.geometry("-1+100")
 
 keyboard = Controller()
 
+
 menu = { 'make' : {'for': make_for,
                    'range': make_range,
                    'variable': make_var,
-                   'print': make_print},
+                   'print': make_print,
+                   'list':make_list},
     
         'jump' : {'start':1,
                   'up':2,
@@ -208,7 +290,9 @@ menu = { 'make' : {'for': make_for,
                   'end':4},
         'use variable' : use_variable,
         
-        'run': run_code
+        'run': run_code,
+        
+        'undo': undo,
         }    
 current_menu = []
 content_var.set(content_text)

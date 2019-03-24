@@ -6,7 +6,4 @@ Created on Sat Mar 23 19:50:30 2019
 """
 
 
-timing = 10
-for i in range(timing):
-    print(timing)
-    
+

@@ -42,7 +42,7 @@ text=""
 
 #stop_dic=openDic(stop_dic,"stop_dic")
 #make_dic=openDic(make_dic,"make_dic")
-name="print_dic"
+name="move_dic"
 dics[name]=openDic(name)
 stop_dic=openDic("stop_dic")
 
@@ -53,7 +53,7 @@ while True:
     #dics[name]["stop"]=1
     #break    
     #del dics[name]["up"]
-    dics[name]["parent"]=1
+    dics[name]["movie"]=1
     break
     print ("TRAINING",name+"\n")
     with microphone as source:
