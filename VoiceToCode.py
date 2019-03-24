@@ -40,7 +40,6 @@ recognizer.energy_threshold = 50
 recognizer.dynamic_energy_threshold = False
 
 def voice_to_text(needed_text, circle_canvas):
-    print("i got here")
     text = ""
     content_text = ""
     content_text += (needed_text + '\n')
@@ -57,7 +56,6 @@ def voice_to_text(needed_text, circle_canvas):
             content_var.set(content_text)
             circle_canvas.itemconfig(circle, fill="red")
             text = recognizer.recognize_google(audio)
-            print (text)
             
         except:
             pass
@@ -92,9 +90,7 @@ def make_range():
 def make_var(circle_canvas):
     while True:
         content_text=""
-        print("i got here4")
         var_name = voice_to_text("Enter var name",circle_canvas)
-        print("i got here5")
         if var_name in reserved:
            content_var.set("Variable is reserved")
         elif var_name in variables:
@@ -102,9 +98,7 @@ def make_var(circle_canvas):
         else:
             variables.append(var_name)
             var_value=voice_to_text("Enter var value",circle_canvas)
-            print (var_value,"HOLAOALALA")
             break
-    print("{} {}".format(var_name,var_value))
     keyboard.type(var_name.lower().replace(" ", "_") + " = "+var_value+"\n")
 
 def use_variable(circle_canvas):
@@ -123,7 +117,6 @@ def use_variable(circle_canvas):
             keyboard.press(Key.end)
             keyboard.press(Key.enter)
             break
-    print ("HOLA")
 def run_code():
     keyboard.press(Key.f5)
 def make_print():
