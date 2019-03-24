@@ -6,7 +6,6 @@ from threading import Thread
 from tkinter import Tk, Label, StringVar, Canvas
 
 import os,time
-clear = lambda: os.system('cls')
 
 def openDic(name):
     try:
@@ -117,12 +116,31 @@ def use_variable(circle_canvas):
             keyboard.press(Key.end)
             keyboard.press(Key.enter)
             break
+        
 def run_code():
     keyboard.press(Key.f5)
+    
 def make_print():
     keyboard.type("print(")
     #keyboard.press(Key.left)
 
+def move_start():
+    keyboard.press(Key.home)
+
+def move_end():
+    keyboard.press(Key.end)
+
+def move_down():
+    keyboard.press(Key.down)
+    
+def move_left():
+    keyboard.press(Key.left)
+    
+def move_right():
+    keyboard.press(Key.right)
+    
+def move_up():
+    keyboard.press(Key.up)
 
 
 
@@ -154,6 +172,8 @@ def voice_recon(current_menu, circle_canvas):
             if text in dics["stop_dic"]:
                 window.destroy()
                 break
+            if text == "inspect":
+                print (dics)
                 
             elif menu_lenght == 0:
                 if text in menu:
@@ -204,10 +224,13 @@ menu = { 'make' : {'for': make_for,
                    'variable': make_var,
                    'print': make_print},
     
-        'jump' : {'start':1,
-                  'up':2,
-                  'down':3,
-                  'end':4},
+        'movie' : {'start': move_start,
+                  'left': move_left,
+                  'right':move_right,
+                  'up': move_up,
+                  'down': move_down,
+                  'end': move_end},
+                  
         'use variable' : use_variable,
         
         'run': run_code
