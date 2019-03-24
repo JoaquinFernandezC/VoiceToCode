@@ -6,7 +6,6 @@ from threading import Thread
 from tkinter import Tk, Label, StringVar, Canvas
 
 import os,time
-clear = lambda: os.system('cls')
 
 def openDic(name):
     try:
@@ -197,7 +196,6 @@ window.config(bg="black")
 window.geometry("-1+100")
 
 keyboard = Controller()
-
 
 menu = { 'make' : {'for': make_for,
                    'range': make_range,
